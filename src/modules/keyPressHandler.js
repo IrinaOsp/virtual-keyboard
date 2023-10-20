@@ -1,4 +1,4 @@
-import { textArea } from './clicksHandler.js';
+import { insertSymb } from './clicksHandler.js';
 
 export const keyDown = document.addEventListener('keydown', (event) => {
   const keyCode = event.code;
@@ -7,7 +7,10 @@ export const keyDown = document.addEventListener('keydown', (event) => {
     virtualKey.classList.add('active');
     if (!virtualKey.classList.contains('key_service')) {
       event.preventDefault();
-      textArea.value += virtualKey.textContent;
+      insertSymb(virtualKey.textContent);
+    } else if (virtualKey.classList.contains('key_tab')) {
+      event.preventDefault();
+      insertSymb('\t');
     }
   }
 });

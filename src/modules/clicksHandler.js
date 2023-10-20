@@ -3,6 +3,8 @@ import { keyArr } from './DOM.js';
 export const textArea = document.querySelector('.textarea');
 
 let cursorPosition = textArea.selectionStart;
+textArea.selectionStart = cursorPosition;
+textArea.selectionEnd = cursorPosition;
 
 const keyboardArea = document.querySelector('.keyboard');
 
@@ -10,29 +12,48 @@ keyboardArea.addEventListener('mousedown', (event) => {
   if (event.target !== textArea) {
     event.preventDefault();
     textArea.focus();
-    textArea.selectionStart = cursorPosition - 1;
-    textArea.selectionEnd = cursorPosition - 1;
   }
 });
+
+export const insertSymb = (symb) => {
+  cursorPosition = textArea.selectionStart;
+  const beforeCoursor = textArea.value.slice(0, textArea.selectionStart);
+  const afetrCoursor = textArea.value.slice(textArea.selectionStart, textArea.value.length);
+  textArea.value = `${beforeCoursor}${symb}${afetrCoursor}`;
+  cursorPosition += 1;
+  textArea.selectionStart = cursorPosition;
+  textArea.selectionEnd = cursorPosition;
+};
+
+const delSymb = () => {
+  cursorPosition = textArea.selectionStart;
+  let beforeCoursor = textArea.value.slice(0, textArea.selectionStart);
+  const afetrCoursor = textArea.value.slice(textArea.selectionStart, textArea.value.length);
+  beforeCoursor = beforeCoursor.slice(0, beforeCoursor.length - 1);
+  textArea.value = `${beforeCoursor}${afetrCoursor}`;
+  cursorPosition -= 1;
+  textArea.selectionStart = cursorPosition;
+  textArea.selectionEnd = cursorPosition;
+};
 
 export function clicksHandler() {
   keyArr.forEach((key) => {
     key.addEventListener('mousedown', () => {
       if (!key.classList.contains('key_service')) {
-        textArea.value += key.textContent;
+        insertSymb(key.textContent);
       } else {
         switch (key.textContent) {
           case 'space':
-            textArea.value += ' ';
+            insertSymb(' ');
             break;
           case 'backspace':
-            textArea.value = textArea.value.substring(0, textArea.value.length - 1);
+            delSymb();
             break;
           case 'tab':
-            textArea.value += '\t';
+            insertSymb('\t');
             break;
           case 'enter':
-            textArea.value += '\n';
+            insertSymb('\n');
             break;
           case 'shift':
             break;
@@ -47,16 +68,18 @@ export function clicksHandler() {
               textArea.selectionEnd = cursorPosition - 1;
             }
             break;
-          case '⇒': // to be fixed
-            if (textArea.selectionStart < textArea.value.length) {
+          case '⇒':
+            if (textArea.selectionStart <= textArea.value.length) {
               cursorPosition = textArea.selectionStart;
               textArea.selectionStart = cursorPosition + 1;
               textArea.selectionEnd = cursorPosition + 1;
             }
             break;
           case '⇑':
+            insertSymb('⇑');
             break;
           case '⇓':
+            insertSymb('⇓');
             break;
           default: break;
         }

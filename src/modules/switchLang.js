@@ -11,33 +11,41 @@ const KEYS_RU = [
 
 const language = document.querySelector('.language');
 
-const switchLang = document.addEventListener('keydown', (event) => {
-  if (event.ctrlKey && event.altKey && language.textContent === 'English') {
-    document.querySelector('.language').textContent = 'Russian';
-    for (let i = 0; i < keyArr.length; i += 1) {
-      if (virtualCaps.classList.contains('key_caps_active')) {
-        if (!keyArr[i].classList.contains('key_service')) {
-          keyArr[i].textContent = KEYS_RU[i].toUpperCase();
-        } else {
-          keyArr[i].textContent = KEYS_RU[i];
-        }
+function setRussian() {
+  document.querySelector('.language').textContent = 'Russian';
+  for (let i = 0; i < keyArr.length; i += 1) {
+    if (virtualCaps.classList.contains('key_caps_active')) {
+      if (!keyArr[i].classList.contains('key_service')) {
+        keyArr[i].textContent = KEYS_RU[i].toUpperCase();
       } else {
         keyArr[i].textContent = KEYS_RU[i];
       }
+    } else {
+      keyArr[i].textContent = KEYS_RU[i];
     }
-  } else if (event.ctrlKey && event.altKey && language.textContent === 'Russian') {
-    document.querySelector('.language').textContent = 'English';
-    for (let i = 0; i < keyArr.length; i += 1) {
-      if (virtualCaps.classList.contains('key_caps_active')) {
-        if (!keyArr[i].classList.contains('key_service')) {
-          keyArr[i].textContent = KEYS_EN[i].toUpperCase();
-        } else {
-          keyArr[i].textContent = KEYS_EN[i];
-        }
+  }
+}
+
+function setEnglish() {
+  document.querySelector('.language').textContent = 'English';
+  for (let i = 0; i < keyArr.length; i += 1) {
+    if (virtualCaps.classList.contains('key_caps_active')) {
+      if (!keyArr[i].classList.contains('key_service')) {
+        keyArr[i].textContent = KEYS_EN[i].toUpperCase();
       } else {
         keyArr[i].textContent = KEYS_EN[i];
       }
+    } else {
+      keyArr[i].textContent = KEYS_EN[i];
     }
+  }
+}
+
+const switchLang = document.addEventListener('keydown', (event) => {
+  if (event.ctrlKey && event.altKey && language.textContent === 'English') {
+    setRussian();
+  } else if (event.ctrlKey && event.altKey && language.textContent === 'Russian') {
+    setEnglish();
   }
 });
 
@@ -49,10 +57,10 @@ function setLocalStorage() {
 window.addEventListener('beforeunload', setLocalStorage);
 
 function getLocalStorage() {
-  if (localStorage.getItem('language') === 'underfined') {
-    language.textContent = 'English';
-  } else {
-    language.textContent = localStorage.getItem('language');
+  if (localStorage.getItem('language') === 'underfined' || !localStorage.getItem('language') || localStorage.getItem('language') === 'English') {
+    setEnglish();
+  } else if (localStorage.getItem('language') === 'Russian') {
+    setRussian();
   }
 }
 window.addEventListener('load', getLocalStorage);
